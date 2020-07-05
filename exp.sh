@@ -2,9 +2,20 @@
 source ./base_function.sh
 debug_mode='pause'
 
+
+zbx_server='192.168.137.1'
+zbx_sender='/opt/zabbix/bin/zabbix_sender'
+zbx_receiver='msg-receiver'
+zbx_key='alert-txt'
+zbx_port='10051'	
+
+
+
+
 run_cmd "ls" 
 run_cmd "date" 
-run_cmd "date3" 
+run_cmd "date3"  || send_msg_to_zbx "date3"
+exit
 var='sshd'
 run_cmd "netstat -ntpl|grep $var"
 
@@ -76,11 +87,3 @@ now
 now -10
 
 
-zbx_server='192.168.137.1'
-zbx_sender='/opt/zabbix/bin/zabbix_sender'
-zbx_receiver='msg-receiver'
-zbx_key='alert-txt'
-zbx_port='10051'	
-
-
-send_msg_to_zbx "hello"
