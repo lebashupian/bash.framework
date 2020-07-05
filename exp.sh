@@ -17,6 +17,7 @@ run_cmd "date"
 run_cmd "date3"  || send_msg_to_zbx "date3"
 exit
 
+
 var='sshd'
 run_cmd "netstat -ntpl|grep $var"
 
