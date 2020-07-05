@@ -41,9 +41,8 @@ function pause() {
 		prompt=$1
 	}
 
-
-	echo -e "\033[33m $prompt \033[0m"  
-	read  #""	
+	#echo -ne "\033[33m$prompt\033[0m"
+	read -p "`echo -ne "\033[33m$prompt\033[0m"`"
 }
 
 
@@ -72,38 +71,117 @@ function log_to() {
 function run_cmd() {
 	local cmd=''
 	[[ ! -z "$1" ]] && cmd=$1
-	echo -e "\e[44m $cmd \e[0m"
-	echo $cmd
+	#蓝色背景，加粗，白字
+	echo -e "\e[1;44m$cmd\e[0m"
 	output=`eval "$cmd" 2>&1`
 	exe_code=$?
 	[[ "$exe_code" == "0" ]] && {
 		#echo -e "$output"
 		#echo -e "\033[32m $1 ok \033[0m"
-		echo -e "\033[32m $output \033[0m"
+		echo -e "\033[1;32m$output\033[0m"
+		[[ $debug_mode == "pause" ]] && pause
 		return 0
 	} || {
 		#echo -e "$output"
 		#echo -e "\033[31m check $1 failed \033[0m"
-		echo -e "\033[31m $output \033[0m"
+		echo -e "\033[1;31m$output\033[0m"
+		[[ $debug_mode == "pause" ]] && pause
 		return 1
 	}
 }
 
-function today() {
+function day() {
 	local deviation="+0"
 	[[ ! -z $1 ]] && deviation="$1"
-	date +%F@ -d "$deviation day"
+	date +%F -d "$deviation day"
 }
 
 function datetime() {
 	local deviation="+0"
 	[[ ! -z $1 ]] && deviation="$1"
-	date +%F@%T -d "$deviation day"
+	date +%F@%T -d "$deviation min"
 }
 
 function now() {
 	local deviation="+0"
 	[[ ! -z $1 ]] && deviation="$1"
-	date +%T -d "$deviation hours"
+	date +%T -d "$deviation min"
 }
 
+
+function return_script_dir() {
+	basedir=`cd $(dirname $0); pwd -P`
+	echo $basedir	
+}
+
+
+
+function winbox() {
+	[[ $1 == input ]] && {
+		local inputbox=''
+		inputbox=$(whiptail --title "Dialog " --inputbox "$2"  10 50  3>&1 1>&2 2>&3);
+		echo "$inputbox"
+		#return 0
+	}
+
+	[[ $1 == button ]] && {
+		if (whiptail --title "Dialog" --yes-button "Y" --no-button "N" --yesno "$2" 10 50) then
+			return 0
+		else
+			return 1
+		fi;
+	}
+
+	[[ $1 == redio ]] && {
+		shift 1
+		DISTROS=$(whiptail --title "Dialog" --radiolist \
+		"redio" 15 60 4 \
+		$@  3>&1 1>&2 2>&3)
+		echo $DISTROS
+	}
+
+	[[ $1 == check ]] && {
+		shift 1
+		DISTROS=$(whiptail --title "Dialog" --checklist \
+		"checklist" 15 60 4 \
+		$@ 3>&1 1>&2 2>&3)
+		echo $DISTROS	
+	}
+
+	[[ $1 == password ]] && {
+		local PASSWORD=''
+		PASSWORD=$(whiptail --title "Password Box" --passwordbox "Enter your password and choose Ok to continue." 10 60 3>&1 1>&2 2>&3)
+		echo $PASSWORD
+		#exitstatus=$?
+		#if [ $exitstatus = 0 ]; then
+		#    echo "Your password is:" $PASSWORD
+		#else
+		#    echo "You chose Cancel."
+		#fi		
+	}
+
+	[[ $1 == menu ]] && {
+		shift 1
+		OPTION=$(whiptail --title "Dialog" --menu "menu" 15 60 4 \
+		$@  3>&1 1>&2 2>&3)
+		echo $OPTION
+	}
+
+	[[ $1 == process ]] && {
+		whiptail --gauge "Please wait while installing" 6 60 0
+	}
+}
+
+#
+function a_whether_include_b() {
+	#echo $2
+	for i in $2
+	do
+		i=`echo $i|sed 's/"//g'`
+		#echo "$1----$i"
+		[[ $1 == $i ]] && {
+			return 0
+		}
+	done
+	return 1
+}
