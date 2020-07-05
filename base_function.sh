@@ -29,7 +29,7 @@ function exit_msg() {
 	local exit_code=1
 	[[ ! -z $1 ]] && msg=$1
 	[[ ! -z $2 ]] && exit_code=$2
-	echo $msg
+	echo_color error $msg
 	exit $exit_code
 }
 
@@ -184,4 +184,35 @@ function a_whether_include_b() {
 		}
 	done
 	return 1
+}
+
+
+function send_msg_to_zbx() {
+	value="$1"
+
+	[[ -z $zbx_sender ]] && {
+		echo_color warn "zbx_host主机变量没有被定义,使用预设变量"
+		zbx_sender='/opt/zabbix/bin/zabbix_sender'
+	}
+
+	[[ -z $zbx_receiver ]] && {
+		echo_color warn "zbx-receiver主机变量没有被定义,使用预设变量"
+		zbx_receiver='msg-receiver'		
+	}
+
+	[[ -z $zbx_server ]] && {
+		exit_msg "zbx_server变量没有被定义"
+	}
+
+	[[ -z $zbx_key ]] && {
+		echo_color warn "zbx_key主机变量没有被定义,使用预设变量"
+		zbx_key='alert-txt'		
+	}
+
+	[[ -z $zbx_port ]] && {
+		echo_color warn "zbx_port主机变量没有被定义,使用预设变量"
+		zbx_port='10051'		
+	}	
+
+	$zbx_sender -vv -s $zbx_receiver  -z  $zbx_server -p $zbx_port -k $zbx_key  -o "from $(hostname): $value"
 }
