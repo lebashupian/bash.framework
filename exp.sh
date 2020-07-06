@@ -15,7 +15,6 @@ zbx_port='10051'
 run_cmd "ls" 
 run_cmd "date" 
 run_cmd "date3"  || send_msg_to_zbx "date3"
-exit
 
 
 var='sshd'
@@ -60,17 +59,34 @@ log_to "/tmp/1.log" "test"
 a_whether_include_b opt1 "$opts" && echo in || echo not in
 a_whether_include_b opt2 "$opts" && echo in || echo not in
 
-
 password=$(winbox password)
 echo $password
 
+
+function test_process_bar() {
+	echo "开始测试"
+	for i in {1..100}
+	do
+		#
+		#  code
+		#
+		date
+		echo $i
+		sleep 0.01
+	done
+}
+
+#
+# 因为管道的原因,所有的echo都并不会被回显
+#
+test_process_bar | winbox process
+
 {
-echo 10
-sleep 0.5
-echo 20
-sleep 0.5
-echo 100
-sleep 0.5
+for i in {1..100}
+do
+	echo $i
+	sleep 0.01
+done
 } | winbox process
 
 
@@ -87,5 +103,8 @@ datetime -10
 now +10
 now
 now -10
+
+var=$(now -10)
+echo "---$var"
 
 
