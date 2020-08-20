@@ -22,6 +22,11 @@ function echo_color() {
 	esac
 }
 
+function echo_debug() {
+	#
+	[[ $debug_mode == "pause" ]] && echo_color warn "debug ...."
+}
+
 function exit_msg() {
 	local msg=''
 	local exit_code=1

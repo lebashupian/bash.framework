@@ -3,6 +3,8 @@ source ./bash.framework.sh
 debug_mode='pause'
 
 
+echo_debug "haha"
+
 zbx_server='192.168.137.1'
 zbx_sender='/opt/zabbix/bin/zabbix_sender'
 zbx_receiver='msg-receiver'
