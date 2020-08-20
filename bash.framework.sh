@@ -1,21 +1,19 @@
 #!/bin/bash
-#
-# v=0.0.1
-#
+
 
 function echo_color() {
 	case "$1" in
 		"error")
 			#echo -e "\033[31m红色字\033[0m"
-			echo -e "\033[31m [error] $2 \033[0m"    	
+			echo -e "\033[1;31m [error] $2 \033[0m"    	
 		;;
 		"warn")
 			#echo -e "\033[33m黄色字\033[0m"  
-			echo -e "\033[33m [warn] $2 \033[0m"  
+			echo -e "\033[1;33m [warn] $2 \033[0m"  
 		;;
 		"info")
 			#echo -e "\033[32m绿色字\033[0m"
-			echo -e "\033[32m [info] $2 \033[0m"    
+			echo -e "\033[1;32m [info] $2 \033[0m"    
 		;;
 		*)
 			#echo -e "\033[44;30m蓝底黑字\033[0m"  
