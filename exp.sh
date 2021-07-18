@@ -30,7 +30,7 @@ echo \$line
 done
 "
 
-wxl=$(winbox input 提示)
+wxl=$(winbox input 提示 默认)
 echo $wxl
 if (winbox button "按键") then
 echo Y

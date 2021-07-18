@@ -122,7 +122,7 @@ function return_script_dir() {
 function winbox() {
 	[[ $1 == input ]] && {
 		local inputbox=''
-		inputbox=$(whiptail --title "Dialog " --inputbox "$2"  10 50  3>&1 1>&2 2>&3);
+		inputbox=$(whiptail --title "Dialog " --inputbox "$2"  10 50 "$3" 3>&1 1>&2 2>&3);
 		echo "$inputbox"
 		#return 0
 	}
