@@ -219,3 +219,44 @@ function send_msg_to_zbx() {
 
 	$zbx_sender -vv -s $zbx_receiver  -z  $zbx_server -p $zbx_port -k $zbx_key  -o "from $(hostname): $value"
 }
+
+
+
+function echo_header() {
+	var_tpye=$1
+	var_title=$2
+	var_fill=''
+	var_fill_char='-'
+	var_complete_title=''
+
+    case "$var_tpye" in
+    	"h1" )
+			var_length='75'
+    		;;
+    	"h2" )
+			var_length='55'
+    		;;
+    	"h3" )
+			var_length='35'
+    		;;
+    	"h4" )
+			var_length='5'
+    		;;   	
+    esac
+    #echo $var_tpye
+    #echo $var_length
+	for i in $(seq 1 $var_length)
+	do
+		#echo $i
+		var_fill=${var_fill}${var_fill_char}
+	done
+
+	var_complete_title=${var_fill}${var_title}
+	echo -e "\033[47;30m ${var_complete_title} \033[0m"  
+}
+
+#echo_header "h1" "ssfsf"
+#echo_header "h2" "ss"
+#echo_header "h2" "ss2222"
+#echo_header "h3" "ssfsf"
+#echo_header "h4" "ssfsf"
